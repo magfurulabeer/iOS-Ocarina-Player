@@ -42,6 +42,8 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *naviRightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *naviLeftConstraint;
 
+@property (nonatomic) CGFloat heightForNotes;
+
 @end
 
 // TODO: Place notes on right part of staff
@@ -91,7 +93,6 @@
     
     
     
-    
     // Hide them after first second
     [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(hideBubbles) userInfo:nil repeats:NO];
     
@@ -118,7 +119,11 @@
 //                     completion:^(BOOL finished) {
 //                         
 //                     }];
+    
+    self.heightForNotes = self.note1.frame.size.height;
+    [self hideNotes];
 
+    
     [UIView animateWithDuration:3 delay:0 options:UIViewAnimationOptionAutoreverse | UIViewAnimationOptionRepeat | UIViewAnimationOptionCurveEaseInOut animations:^{
         
         self.naviRightConstraint.active = NO;
@@ -236,7 +241,9 @@
     } completion:nil];
     
     for (UIImageView *noteImgView in self.notes) {
-        noteImgView.hidden = YES;
+        CGSize size = noteImgView.frame.size;
+        CGPoint origin = noteImgView.frame.origin;
+        noteImgView.frame = CGRectMake(origin.x, origin.y, size.width, 0);
     }
 }
 
@@ -269,9 +276,10 @@
 -(void)displayImage:(UIImage *)img {
     NSUInteger count = [self.ocarina.melody count];
     UIImageView *note = self.notes[count-1];
-    note.hidden = NO;
-    note.opaque = YES;
     note.image = img;
+    CGSize size = note.frame.size;
+    CGPoint origin = note.frame.origin;
+    note.frame = CGRectMake(origin.x, origin.y, size.width, self.heightForNotes);
 }
 
 #pragma mark - IBActions and Gestures
