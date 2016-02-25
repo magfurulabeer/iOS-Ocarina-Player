@@ -236,9 +236,6 @@
 
 -(void)hideNotes {
     self.staff.transform = CGAffineTransformMakeTranslation(10, 0);
-    [UIView animateWithDuration:0.4 delay:0.0 usingSpringWithDamping:0.2 initialSpringVelocity:1.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.staff.transform = CGAffineTransformIdentity;
-    } completion:nil];
     
     for (UIImageView *noteImgView in self.notes) {
         CGSize size = noteImgView.frame.size;
@@ -258,6 +255,9 @@
         [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(playSong) userInfo:nil repeats:NO];
     } else {
         if ([self.ocarina.melody count] == 8) {
+            [UIView animateWithDuration:0.4 delay:0.0 usingSpringWithDamping:0.2 initialSpringVelocity:1.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                self.staff.transform = CGAffineTransformIdentity;
+            } completion:nil];
             [self.songErrorPlayer play];
             [self resetNotes];
          
@@ -358,6 +358,9 @@
 
 -(void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if (motion == UIEventSubtypeMotionShake) {
+        [UIView animateWithDuration:0.4 delay:0.0 usingSpringWithDamping:0.2 initialSpringVelocity:1.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.staff.transform = CGAffineTransformIdentity;
+        } completion:nil];
         [self.songErrorPlayer play];
         [self resetNotes];
     }
