@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import "Ocarina.h"
+#import <Social/Social.h>
 
 @interface ViewController ()
 
@@ -41,6 +42,8 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *naviRightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *naviLeftConstraint;
+@property (weak, nonatomic) IBOutlet UIButton *cuccoButton;
+@property (weak, nonatomic) IBOutlet UIButton *heartButton;
 
 @property (nonatomic) CGFloat heightForNotes;
 
@@ -48,7 +51,6 @@
 
 // TODO: Place notes on right part of staff
 // TODO: Make staff red. Possibly add clef.
-// TODO:
 @implementation ViewController
 
 
@@ -90,7 +92,8 @@
     
     self.onLeft = NO;
     self.counter = 0;
-    
+    self.heartButton.hidden = YES;
+    self.cuccoButton.hidden = YES;
     
     
     // Hide them after first second
@@ -100,7 +103,6 @@
     [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(toggleActions) userInfo:nil repeats:YES];
     
     
-//    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(makeNaviMove) userInfo:nil repeats:YES];
     
     
     
@@ -108,17 +110,6 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated {
-//    [UIView animateWithDuration:3 delay:0
-//                        options:UIViewAnimationOptionAutoreverse | UIViewAnimationOptionRepeat | UIViewAnimationOptionCurveEaseInOut
-//                     animations:^{
-//                         NSInteger distance = self.view.frame.size.width - (self.leftBubble.frame.size.width * 2) + 15;
-//                         CGSize size = self.navi.frame.size;
-//                         CGPoint point = self.navi.frame.origin;
-//                         self.navi.frame = CGRectMake(point.x - distance, point.y, size.width, size.height);
-//                     }
-//                     completion:^(BOOL finished) {
-//                         
-//                     }];
     
     self.heightForNotes = self.note1.frame.size.height;
     [self hideNotes];
@@ -140,7 +131,6 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Navi Animation methods
@@ -151,14 +141,10 @@
     if (self.onLeft) {
         self.leftBubble.hidden = NO;
         [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(hideBubbles) userInfo:nil repeats:NO];
-        //        [UIView animateWithDuration:1.0 animations:^{
-        //            self.navi.layer.transform = CATransform3DMakeRotation(M_PI,0.0,1.0,0.0);
-        //        } completion:^(BOOL finished){
-        //        }];
+
     } else {
         self.rightBubble.hidden = NO;
         [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(hideBubbles) userInfo:nil repeats:NO];
-        //        [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(hideBubbles) userInfo:nil repeats:NO];
     }
     
     
@@ -186,22 +172,6 @@
                          
                      }];
 }
-
-
-
-//- (void)makeNaviMove {
-//    NSLog(@"Make navi move");
-//    
-//    [UIView animateWithDuration:3 delay:0
-//                        options: UIViewAnimationOptionCurveEaseInOut
-//                     animations:^{
-//                         NSInteger distance = 1 * (self.view.frame.size.width - (self.leftBubble.frame.size.width * 2) +15);
-//                         self.navi.frame = CGRectOffset(self.navi.frame, distance, 0);
-//                     }
-//                     completion:nil];
-//}
-
-
 
 #pragma mark - Music Methods
 
@@ -232,10 +202,12 @@
     self.songTitleLabel.hidden = YES;
     self.youPlayedLabel.hidden = YES;
     self.songPlaying = nil;
+    self.heartButton.hidden = YES;
+    self.cuccoButton.hidden = YES;
 }
 
 -(void)hideNotes {
-    self.staff.transform = CGAffineTransformMakeTranslation(10, 0);
+    self.staff.transform = CGAffineTransformMakeTranslation(0, 0);
     
     for (UIImageView *noteImgView in self.notes) {
         CGSize size = noteImgView.frame.size;
@@ -251,6 +223,8 @@
         self.heyListenPlayer.volume = 0;
         self.heyPlayer.volume = 0;
         [self.songCorrectPlayer play];
+        self.heartButton.hidden = NO;
+        self.cuccoButton.hidden = NO;
         self.songPlaying = matchedSong;
         [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(playSong) userInfo:nil repeats:NO];
     } else {
@@ -366,9 +340,19 @@
     }
 }
 
+- (IBAction)heartTapped:(id)sender {
+    SLComposeViewController *vc = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+    NSString *msg = [NSString stringWithFormat:@"I just played %@ on Ocarina Player!", self.songPlaying];
+    [vc setInitialText:msg];
+    [self presentViewController:vc animated:YES completion:nil];
+}
 
-
-
+- (IBAction)cuccoTapped:(UIButton *)sender {
+    SLComposeViewController *vc = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+    NSString *msg = [NSString stringWithFormat:@"I just played %@ on Ocarina Player!", self.songPlaying];
+    [vc setInitialText:msg];
+    [self presentViewController:vc animated:YES completion:nil];
+}
 
 
 #pragma mark - MISC settings
@@ -380,6 +364,4 @@
 -(BOOL)canBecomeFirstResponder {
     return YES;
 }
-
-
 @end
