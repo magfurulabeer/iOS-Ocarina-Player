@@ -67,6 +67,7 @@
     self.leftBubble.hidden = YES;
     self.rightBubble.hidden = NO;
     
+    
     // Prepare audio players
     
     NSURL *hyruleThemeUrl = [[NSBundle mainBundle]URLForResource:@"hyruleTheme" withExtension:@"mp3"];
@@ -92,16 +93,17 @@
     
     self.onLeft = NO;
     self.counter = 0;
-    self.heartButton.hidden = YES;
-    self.cuccoButton.hidden = YES;
-    
+//    self.heartButton.hidden = YES;
+//    self.cuccoButton.hidden = YES;
+    self.cuccoButton.transform = CGAffineTransformMakeTranslation(0, 150);
+    self.heartButton.transform = CGAffineTransformMakeTranslation(0, -200);
+    self.heartButton.alpha = 0;
     
     // Hide them after first second
     [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(hideBubbles) userInfo:nil repeats:NO];
     
     // Toggle bubbles every 3 seconds
     [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(toggleActions) userInfo:nil repeats:YES];
-    
     
     
     
@@ -202,8 +204,17 @@
     self.songTitleLabel.hidden = YES;
     self.youPlayedLabel.hidden = YES;
     self.songPlaying = nil;
-    self.heartButton.hidden = YES;
-    self.cuccoButton.hidden = YES;
+//    self.heartButton.hidden = YES;
+//    self.cuccoButton.hidden = YES;
+
+    [UIView animateWithDuration:1 animations:^{
+        self.heartButton.alpha = 0;
+        self.cuccoButton.transform = CGAffineTransformMakeTranslation(0, 150);
+
+    } completion:^(BOOL finished) {
+        self.heartButton.transform = CGAffineTransformMakeTranslation(0, -200);
+    }];
+
 }
 
 -(void)hideNotes {
@@ -223,12 +234,19 @@
         self.heyListenPlayer.volume = 0;
         self.heyPlayer.volume = 0;
         [self.songCorrectPlayer play];
-        self.heartButton.hidden = NO;
-        self.cuccoButton.hidden = NO;
+//        self.heartButton.hidden = NO;
+//        self.cuccoButton.hidden = NO;
+        [UIView animateWithDuration:2 animations:^{
+            self.cuccoButton.transform = CGAffineTransformIdentity;
+            self.heartButton.transform = CGAffineTransformIdentity;
+            self.heartButton.alpha = 1;
+        }];
         self.songPlaying = matchedSong;
         [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(playSong) userInfo:nil repeats:NO];
     } else {
         if ([self.ocarina.melody count] == 8) {
+            self.staff.transform = CGAffineTransformMakeTranslation(15, 0);
+
             [UIView animateWithDuration:0.4 delay:0.0 usingSpringWithDamping:0.2 initialSpringVelocity:1.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.staff.transform = CGAffineTransformIdentity;
             } completion:nil];
@@ -332,6 +350,8 @@
 
 -(void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if (motion == UIEventSubtypeMotionShake) {
+        self.staff.transform = CGAffineTransformMakeTranslation(15, 0);
+
         [UIView animateWithDuration:0.4 delay:0.0 usingSpringWithDamping:0.2 initialSpringVelocity:1.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.staff.transform = CGAffineTransformIdentity;
         } completion:nil];
