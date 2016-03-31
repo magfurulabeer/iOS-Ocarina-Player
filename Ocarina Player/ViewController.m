@@ -265,13 +265,35 @@
     [self resetNotes];
 }
 
--(void)displayImage:(UIImage *)img {
+-(void)displayImage:(UIImage *)img forNote:(NSString *)button {
     NSUInteger count = [self.ocarina.melody count];
     UIImageView *note = self.notes[count-1];
     note.image = img;
     CGSize size = note.frame.size;
     CGPoint origin = note.frame.origin;
     note.frame = CGRectMake(origin.x, origin.y, size.width, self.heightForNotes);
+    
+    CGFloat displacement = [self displacementForButton:button];
+    note.transform = CGAffineTransformMakeTranslation(0, displacement);
+    
+}
+
+-(CGFloat)displacementForButton:(NSString *)button {
+    
+    CGFloat height = self.staff.frame.size.height;
+    
+    if ([button isEqualToString:@"a"]) {
+        return height/2;
+    } else if ([button isEqualToString:@"up"]) {
+        return -height/2.8;
+    } else if ([button isEqualToString:@"down"]) {
+        return height/2.8;
+    } else if ([button isEqualToString:@"left"]) {
+        return -height/4;
+    } else if ([button isEqualToString:@"right"]) {
+        return height/4;
+    }
+    return 0;
 }
 
 #pragma mark - IBActions and Gestures
@@ -326,23 +348,29 @@
 
 -(void)playNoteForButton:(Button)button withImage:(NSString *)imageName {
     if (!self.songPlaying) {
+        NSString *note;
         if ([imageName isEqualToString:@"a"]) {
             [self.ocarina playOcarinaD];
+            note = @"a";
         }
         if ([imageName isEqualToString:@"up"]) {
             [self.ocarina playOcarinaD2];
+            note = @"up";
         }
         if ([imageName isEqualToString:@"down"]) {
             [self.ocarina playOcarinaF];
+            note = @"down";
         }
         if ([imageName isEqualToString:@"left"]) {
             [self.ocarina playOcarinaB];
+            note = @"left";
         }
         if ([imageName isEqualToString:@"right"]) {
             [self.ocarina playOcarinaA];
+            note = @"right";
         }
         [self.ocarina addNoteToMelody:button];
-        [self displayImage:[UIImage imageNamed:imageName]];
+        [self displayImage:[UIImage imageNamed:imageName] forNote:note];
         [self checkForMatch];
     }
 }
