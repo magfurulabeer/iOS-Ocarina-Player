@@ -37,6 +37,7 @@
         _ocarinaD = [[AVAudioPlayer alloc] initWithContentsOfURL:ocarinaDUrl  error:nil];
         _ocarinaD2 = [[AVAudioPlayer alloc] initWithContentsOfURL:ocarinaD2Url  error:nil];
         _ocarinaB = [[AVAudioPlayer alloc] initWithContentsOfURL:ocarinaBUrl  error:nil];
+        
         _songList = @{  @"Song Of Storms"    :   songOfStorms,
                         @"Zelda's Lullaby"   :   zeldasLullaby,
                         @"Epona's Song"      :   eponasSong,

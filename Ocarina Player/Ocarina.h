@@ -28,7 +28,14 @@ typedef enum {
 @property (strong, nonatomic) AVAudioPlayer *ocarinaB;
 @property (strong, nonatomic) NSDictionary *songList;
 @property (strong, nonatomic) AVAudioPlayer *audioPlayer;
-
+@property (strong, nonatomic) AVAudioPlayer *player1;
+@property (strong, nonatomic) AVAudioPlayer *player2;
+@property (strong, nonatomic) AVAudioPlayer *player3;
+@property (strong, nonatomic) AVAudioPlayer *player4;
+@property (strong, nonatomic) AVAudioPlayer *player5;
+@property (strong, nonatomic) AVAudioPlayer *player6;
+@property (strong, nonatomic) AVAudioPlayer *player7;
+@property (strong, nonatomic) AVAudioPlayer *player8;
 -(void)addNoteToMelody:(Button)button;
 -(void)resetMelody;
 -(void)playOcarinaA; // right
